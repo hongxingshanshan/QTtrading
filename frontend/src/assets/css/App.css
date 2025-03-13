@@ -1,0 +1,64 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* 确保整体页面不会出现右侧滚动轴 */
+    background-color: #1e1e1e; /* 深色背景 */
+    color: #e0e0e0; /* 浅色字体 */
+    font-family: 'Roboto', Arial, sans-serif; /* 使用金融风格的字体 */
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center;
+}
+
+header {
+    background-color: #0a192f; /* 深蓝色背景 */
+    padding: 20px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+}
+
+.container {
+    display: flex;  /* 关键：让 aside 和 main 变成左右布局 */
+    flex-direction: row;
+    flex: 1;
+}
+
+aside {
+    background-color: #0a192f; /* 深灰色背景 */
+    padding: 20px;
+    width: 200px;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-sizing: border-box; /* 确保 padding 不会增加元素的宽度 */
+    flex-shrink: 0; /* 确保 aside 固定宽度，不会被挤压 */
+}
+
+aside a {
+    display: flex;
+    color: #e0e0e0;
+    text-decoration: none;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+aside a:hover {
+    background-color: #37474f; /* 鼠标悬停时的背景色 */
+}
+
+main {
+    display: flex;
+    flex: 1;  /* 关键：main 需要填充剩余空间 */
+    padding: 20px;
+    background-color: #1e1e1e; /* 深色背景 */
+    color: #e0e0e0; /* 浅色字体 */
+    overflow-y: auto; /* 允许垂直滚动 */
+    box-sizing: border-box; /* 确保 padding 不会增加元素的宽度 */
+}

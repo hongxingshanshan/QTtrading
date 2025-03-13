@@ -1,0 +1,149 @@
+/* 统一容器 */
+.container {
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    background-color: #0a192f; /* 深蓝色背景 */
+    color: #e0e0e0; /* 浅色字体 */
+    overflow: hidden;
+}
+
+/* 搜索框 */
+.search-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background-color: #1b2a49; /* 深蓝色背景 */
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.search-field label {
+    margin-bottom: 5px;
+    color: #f6c453; /* 金色 */
+}
+
+/* 按钮 */
+.search-buttons {
+    display: flex;
+    align-items: flex-end;
+}
+
+.btn {
+    background-color: #f6c453; /* 金色 */
+    color: #0a192f; /* 深色字体 */
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #ffcc00; /* 亮金色 */
+}
+
+.btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+/* 表格区域 */
+.table-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 220px); /* 限制最大高度，保证分页可见 */
+    background-color: #112240; /* 深色背景 */
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* 表格 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #f6c453; /* 金色边框 */
+    padding: 12px;
+}
+
+th {
+    background-color: #0a192f; /* 深蓝色 */
+    color: #f6c453; /* 金色 */
+    text-align: left;
+    font-weight: bold;
+}
+
+/* 绿色：上涨 | 红色：下跌 */
+.text-green {
+    color: #4caf50; /* 绿色 */
+    font-weight: bold;
+}
+
+.text-red {
+    color: #ff4c4c; /* 红色 */
+    font-weight: bold;
+}
+
+/* 分页区域 */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1b2a49; /* 深蓝色 */
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+    gap: 10px;
+}
+
+.pagination-container button {
+    background-color: #f6c453; /* 金色 */
+    color: #0a192f;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pagination-container button:hover {
+    background-color: #ffcc00;
+}
+
+.pagination-container input {
+    width: 50px;
+    text-align: center;
+    background-color: #0a192f;
+    color: #f6c453;
+    border: 1px solid #f6c453;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* 返回按钮 */
+.back-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* 交互性 */
+.clickable {
+    cursor: pointer;
+}

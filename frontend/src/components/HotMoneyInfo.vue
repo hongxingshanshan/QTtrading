@@ -33,9 +33,9 @@
       </table>
     </div>
     <div class="pagination-container">
-      <button class="btn" @click="prevPage" :disabled="currentPage === 1">上一页</button>
+      <button class="btn" @click="prevPage">上一页</button>
       <span>第 {{ currentPage }} 页，共 {{ totalPages }} 页</span>
-      <button class="btn" @click="nextPage" :disabled="currentPage === totalPages">下一页</button>
+      <button class="btn" @click="nextPage">下一页</button>
       <label>跳转到:</label>
       <input type="number" v-model.number="jumpPage" min="1" :max="totalPages" />
       <button class="btn" @click="goToPage">跳页</button>
@@ -112,115 +112,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.container {
-  max-width: 80%;
-  margin: 0 auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.search-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.search-field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-
-.search-field label {
-  margin-bottom: 5px;
-}
-
-.search-buttons {
-  display: flex;
-  align-items: flex-end;
-}
-
-.table-container {
-  flex: 1;
-  overflow-y: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-th {
-  background-color: #f2f2f2;
-  text-align: left;
-}
-
-.ellipsis {
-  display: inline-block;
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pagination-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-}
-
-.pagination-container button {
-  margin: 0 5px;
-}
-
-.pagination-container input {
-  width: 50px;
-  margin: 0 5px;
-}
-
-.btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.btn:hover {
-  background-color: #0056b3;
-}
-
-.btn:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-</style>
+<style src="../assets/css/HotMoneyInfo.css" scoped />
