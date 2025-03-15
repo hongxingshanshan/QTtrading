@@ -188,6 +188,7 @@ export default {
     display: flex;
     flex-direction: column;
     padding: 20px;
+    background-color: #f5f5f5;
 }
 
 .query-container {
@@ -195,6 +196,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    color:black;
 }
 
 .chart-container {
