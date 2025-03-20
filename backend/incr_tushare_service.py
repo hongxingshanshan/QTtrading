@@ -46,7 +46,7 @@ def import_daily_limit_cpt_list(start_date, end_date):
         data = df.to_dict(orient='records')
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in tqdm(data, desc="Importing daily_limit_cpt_list data from {start_date} to {end_date}"):
+        for record in tqdm(data, desc=f"Importing daily_limit_cpt_list data from {start_date} to {end_date}"):
             try:
                 cursor.execute('''
                     INSERT INTO daily_limit_cpt_list (
@@ -114,7 +114,7 @@ def import_hm_detail_data(start_date, end_date):
         data = df.to_dict(orient='records')
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in tqdm(data, desc="Importing hm_detail data from {start_date} to {end_date}"):
+        for record in tqdm(data, desc=f"Importing hm_detail data from {start_date} to {end_date}"):
             try:
                 cursor.execute('''
                     INSERT INTO daily_hot_money_trading (
@@ -597,28 +597,32 @@ def import_top_inst_data(start_date, end_date):
 
 def job(start_date=None, end_date=None):
     # 如果 start_date 或 end_date 为空，则默认使用当日日期
-    if start_date is None:
-        start_date = datetime.today().strftime('%Y-%m-%d')
-    if end_date is None:
-        end_date = datetime.today().strftime('%Y-%m-%d')
-    try:
-        import_daily_limit_data(start_date, end_date)
-    except Exception as e:
-        print(f"Error in import_daily_limit_data_by_month: {e}")
+    # if start_date is None:
+    #     start_date = datetime.today().strftime('%Y-%m-%d')
+    # if end_date is None:
+    #     end_date = datetime.today().strftime('%Y-%m-%d')
+    # try:
+    #     import_daily_limit_data(start_date, end_date)
+    # except Exception as e:
+    #     print(f"Error in import_daily_limit_data_by_month: {e}")
 
-    try:
-        import_daily_sector_limit_data_by_ts_code('', start_date, end_date)
-    except Exception as e:
-        print(f"Error in import_daily_sector_limit_data_by_ts_code: {e}")
+    # try:
+    #     import_daily_sector_limit_data_by_ts_code('', start_date, end_date)
+    # except Exception as e:
+    #     print(f"Error in import_daily_sector_limit_data_by_ts_code: {e}")
 
-    try:
-        import_all_daily_data(start_date, end_date)
-    except Exception as e:
-        print(f"Error in import_all_daily_data: {e}")
+    # try:
+    #     import_all_daily_data(start_date, end_date)
+    # except Exception as e:
+    #     print(f"Error in import_all_daily_data: {e}")
 
+    # try:
+    #     import_hm_detail_data(start_date, end_date)
+    # except Exception as e:
+    #     print(f"Error in import_hm_detail_data: {e}")
     try:
-        import_hm_detail_data(start_date, end_date)
+        import_daily_limit_cpt_list(start_date, end_date)    
     except Exception as e:
-        print(f"Error in import_hm_detail_data: {e}")
+        print(f"Error in import_daily_limit_cpt_list: {e}")
 
-# job('20250307','20250307')
+job('20250301','20250320')
