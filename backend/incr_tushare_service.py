@@ -46,7 +46,7 @@ def import_daily_limit_cpt_list(start_date, end_date):
         data = df.to_dict(orient='records')
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in tqdm(data, desc="Importing data"):
+        for record in tqdm(data, desc="Importing daily_limit_cpt_list data from {start_date} to {end_date}"):
             try:
                 cursor.execute('''
                     INSERT INTO daily_limit_cpt_list (
@@ -114,7 +114,7 @@ def import_hm_detail_data(start_date, end_date):
         data = df.to_dict(orient='records')
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in data:
+        for record in tqdm(data, desc="Importing hm_detail data from {start_date} to {end_date}"):
             try:
                 cursor.execute('''
                     INSERT INTO daily_hot_money_trading (
@@ -180,7 +180,7 @@ def import_daily_data_for_stock(ts_code, start_date, end_date):
             break
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in data:
+        for record in tqdm(data, desc=f"Importing daily_data for {ts_code} from {start_date_str} to {end_date_str}"):
             cursor.execute('''
                 INSERT INTO daily_data (ts_code, trade_date, open, high, low, close, pre_close, price_change, pct_chg, vol, amount)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -287,7 +287,7 @@ def import_daily_limit_data(start_date, end_date):
         data = df.to_dict(orient='records')
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in data:
+        for record in tqdm(data, desc=f"Importing daily_limit_data data from {start_date} to {end_date}"):
             try:
                 cursor.execute('''
                     INSERT INTO daily_limit_data (
@@ -456,7 +456,7 @@ def import_top_list_data(start_date, end_date):
             data = df.to_dict(orient='records')
 
             # 插入数据到数据库，使用主键存在覆盖逻辑
-            for record in tqdm(data, desc=f"Importing data for {trade_date_str}"):
+            for record in tqdm(data, desc=f"Importing top_trade_data data for {trade_date_str}"):
                 try:
                     cursor.execute('''
                         INSERT INTO top_trade_data (
@@ -540,7 +540,7 @@ def import_top_inst_data(start_date, end_date):
             data = df.to_dict(orient='records')
 
             # 插入数据到数据库，使用主键存在覆盖逻辑
-            for record in tqdm(data, desc=f"Importing data for {trade_date_str}"):
+            for record in tqdm(data, desc=f"Importing top_inst_data data for {trade_date_str}"):
                 try:
                     cursor.execute('''
                         INSERT INTO top_inst_trade_data (
