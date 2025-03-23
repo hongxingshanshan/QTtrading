@@ -1,13 +1,13 @@
 from flask import Flask, jsonify, request
-from DailyData import get_daily_data
-from HotMoneyData import get_hotmoney_data
-from DailyLimitData import get_daily_limit_data
-from StockBasicInfo import get_stock_basic_info
-from DailyHotMoneyTradeData import get_daily_hotmoney_trade_data
-from DailySectorLimitData import get_daily_sector_limit_data
-from ThsIndex import get_all_ths_index
+from backend.query.DailyData import get_daily_data
+from backend.query.HotMoneyData import get_hotmoney_data
+from backend.query.DailyLimitData import get_daily_limit_data
+from backend.query.StockBasicInfo import get_stock_basic_info
+from backend.query.DailyHotMoneyTradeData import get_daily_hotmoney_trade_data
+from backend.query.DailySectorLimitData import get_daily_sector_limit_data
+from backend.query.ThsIndex import get_all_ths_index
+from backend.task.ScheduledTasks import start_scheduled_tasks
 import threading
-from ScheduledTasks import start_scheduled_tasks
 
 app = Flask(__name__)
 

@@ -1,5 +1,5 @@
 import mysql.connector
-import DataBase as db
+from backend import DataBase as db
 
 def get_daily_limit_data_by_sector():
     # 获取数据库连接
