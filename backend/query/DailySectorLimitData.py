@@ -1,4 +1,3 @@
-import mysql.connector
 from backend import DataBase as db
 
 def get_daily_sector_limit_data(sector_code=None, sector_name=None, sector_type=None, start_date=None, end_date=None):

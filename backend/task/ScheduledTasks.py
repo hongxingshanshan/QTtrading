@@ -2,8 +2,8 @@ import schedule
 import time
 from datetime import datetime
 import chinese_calendar as calendar
-from backend.service.incr_tushare_service import import_daily_limit_data, import_daily_sector_limit_data_by_ts_code, import_all_daily_data, import_hm_detail_data,import_top_list_data,import_top_inst_data,import_daily_limit_cpt_list
-from backend.service.init_tushare_service import import_hot_money_info,import_stock_basic_info,import_ths_index_data,import_ths_member_data
+from backend.tushare.incr_tushare_service import import_daily_limit_data, import_daily_sector_limit_data_by_ts_code, import_all_daily_data, import_hm_detail_data,import_top_list_data,import_top_inst_data,import_daily_limit_cpt_list
+from backend.tushare.init_tushare_service import import_hot_money_info,import_stock_basic_info,import_ths_index_data,import_ths_member_data
 
 def incr_job():
     # 获取当前日期

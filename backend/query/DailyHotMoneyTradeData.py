@@ -1,4 +1,3 @@
-import mysql.connector
 from backend import DataBase as db
 
 def get_daily_hotmoney_trade_data(hm_name=None, trade_date=None, ts_name=None, ts_code=None, page=1, page_size=10):

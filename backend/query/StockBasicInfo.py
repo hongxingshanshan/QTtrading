@@ -1,4 +1,3 @@
-import mysql.connector
 from backend import DataBase as db
 
 def get_stock_basic_info(symbol, name, industry, start_date, end_date, page, page_size):

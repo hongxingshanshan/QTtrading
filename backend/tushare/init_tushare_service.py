@@ -1,8 +1,9 @@
 import chinadata.ca_data as ts
 from backend import DataBase as db
+from backend.tushare import token
 
 # 初始化pro接口
-pro = ts.pro_api('s593c24d0926bfb8414d6c6c243110c0351')
+pro = token.get_tushare().pro_api()
 
 def import_stock_basic_info():
     """

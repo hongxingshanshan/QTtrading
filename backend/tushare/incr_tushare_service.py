@@ -1,14 +1,10 @@
-import pandas as pd
 from tqdm import tqdm 
-import chinadata.ca_data as ts
-import mysql.connector
 from backend import DataBase as db
 from datetime import datetime, timedelta
-import concurrent.futures
-import time
+from backend.tushare import token
 
 # 初始化pro接口
-pro = ts.pro_api('s593c24d0926bfb8414d6c6c243110c0351')
+pro = token.get_tushare().pro_api()
 
 def import_daily_limit_cpt_list(start_date, end_date):
     """
