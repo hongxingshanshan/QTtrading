@@ -75,10 +75,10 @@ def all_ths_index():
 
 if __name__ == '__main__':
     
+    # 启动Flask应用
+    app.run(debug=True)
+    
     # 启动定时任务的线程
     scheduler_thread = threading.Thread(target=start_scheduled_tasks)
     scheduler_thread.daemon = True
     scheduler_thread.start()
-    
-    # 启动Flask应用
-    app.run(debug=True)

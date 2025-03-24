@@ -4,10 +4,17 @@ from datetime import datetime
 import chinese_calendar as calendar
 from backend.tushare.incr_tushare_service import import_daily_limit_data, import_daily_sector_limit_data_by_ts_code, import_all_daily_data, import_hm_detail_data,import_top_list_data,import_top_inst_data,import_daily_limit_cpt_list
 from backend.tushare.init_tushare_service import import_hot_money_info,import_stock_basic_info,import_ths_index_data,import_ths_member_data
+from backend.tushare.adj_factor_tushare import sync_adj_factors
 
 def incr_job():
     # 获取当前日期
     today = datetime.now().strftime('%Y%m%d')
+    # 导入复权因子数据
+    try:
+        sync_adj_factors(today,today)
+    except Exception as e:
+        print(f"Error in import_daily_limit_cpt_list: {e}")
+    
     # 导入每日最强板块数据
     try:
         import_daily_limit_cpt_list(today,today)
@@ -101,4 +108,4 @@ def start_scheduled_tasks():
     while True:
         schedule.run_pending()
         time.sleep(10)
-        print('Waiting for next schedule...')
+        # print('Waiting for next schedule...')
