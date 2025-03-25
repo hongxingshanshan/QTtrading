@@ -58,6 +58,15 @@ def incr_job():
         print(f"Error in import_all_daily_data: {e}")
     
 
+def incr_adj_factors_job():
+    # 获取当前日期
+    today = datetime.now().strftime('%Y%m%d')
+    # 导入复权因子数据
+    try:
+        sync_adj_factors(today,today)
+    except Exception as e:
+        print(f"Error in sync_adj_factors: {e}")
+
 def is_trading_day(date):
     # 判断是否为交易日
     return calendar.is_workday(date) and not calendar.is_holiday(date)
@@ -104,6 +113,9 @@ def start_scheduled_tasks():
     schedule.every().day.at("19:00").do(check_incr_job)
     # 每天凌晨3点执行一次 init 的初始化任务
     schedule.every().day.at("03:00").do(init_job)
+    # 每天早餐9点30执行一次复权因子更新任务
+    schedule.every().day.at("10:00").do(incr_adj_factors_job)
+    
 
     while True:
         schedule.run_pending()

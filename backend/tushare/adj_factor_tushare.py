@@ -68,7 +68,7 @@ def sync_adj_factors(start_date, end_date):
     stocks = cursor.fetchall()
 
     # 遍历所有股票
-    for stock in tqdm(stocks, desc="同步复权因子",total=len(stocks)):
+    for stock in tqdm(stocks, desc=f"同步复权因子 from {start_date} to {end_date}",total=len(stocks)):
         ts_code = stock['ts_code']
         update_adj_factor(ts_code, start_date, end_date, conn)
 
