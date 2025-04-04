@@ -42,7 +42,7 @@ def import_daily_limit_cpt_list(start_date, end_date):
         data = df.to_dict(orient='records')
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in tqdm(data, desc=f"Importing daily_limit_cpt_list data from {start_date} to {end_date}", total=len(data), mininterval=0.1):
+        for record in tqdm(data, desc=f"Importing daily_limit_cpt_list data from {start_date} to {end_date} page {offset}", total=len(data), mininterval=0.1):
             try:
                 cursor.execute('''
                     INSERT INTO daily_limit_cpt_list (
@@ -112,7 +112,7 @@ def import_hm_detail_data(start_date, end_date):
         data = df.to_dict(orient='records')
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in tqdm(data, desc=f"Importing hm_detail data from {start_date} to {end_date}", total=len(data), mininterval=0.1):
+        for record in tqdm(data, desc=f"Importing hm_detail data from {start_date} to {end_date} page {offset}", total=len(data), mininterval=0.1):
             try:
                 cursor.execute('''
                     INSERT INTO daily_hot_money_trading (
@@ -283,7 +283,7 @@ def import_daily_limit_data(start_date, end_date):
         data = df.to_dict(orient='records')
 
         # 插入数据到数据库，使用主键存在覆盖逻辑
-        for record in tqdm(data, desc=f"Importing daily_limit_data data from {start_date} to {end_date}", total=len(data), mininterval=0.1):
+        for record in tqdm(data, desc=f"Importing daily_limit_data data from {start_date} to {end_date} page {offset}", total=len(data), mininterval=0.1):
             try:
                 cursor.execute('''
                     INSERT INTO daily_limit_data (
@@ -452,7 +452,7 @@ def import_top_list_data(start_date, end_date):
             data = df.to_dict(orient='records')
 
             # 插入数据到数据库，使用主键存在覆盖逻辑
-            for record in tqdm(data, desc=f"Importing top_trade_data data for {trade_date_str}", total=len(data), mininterval=0.1):
+            for record in tqdm(data, desc=f"Importing top_trade_data data for {trade_date_str} page {offset} page {offset}", total=len(data), mininterval=0.1):
                 try:
                     cursor.execute('''
                         INSERT INTO top_trade_data (
@@ -589,10 +589,8 @@ def import_top_inst_data(start_date, end_date):
 # 导入每日龙虎榜机构交易明细数据
 # import_top_inst_data('20250307','20250307')
 
-
-
-
 def incr_job(start_date, end_date):
+    
     # 导入每日最强板块数据
     try:
         import_daily_limit_cpt_list(start_date,end_date)
@@ -601,19 +599,19 @@ def incr_job(start_date, end_date):
 
     # 导入每日涨跌停数据
     try:
-        import_daily_limit_data(start_date,end_date)
+        import_daily_limit_data(start_date, end_date)
     except Exception as e:
         print(f"Error in import_daily_limit_data_by_month: {e}")
 
     # 导入每日行业涨跌停数据
     try:
-        import_daily_sector_limit_data_by_ts_code('', start_date,end_date)
+        import_daily_sector_limit_data_by_ts_code('', start_date, end_date)
     except Exception as e:
         print(f"Error in import_daily_sector_limit_data_by_ts_code: {e}")
 
     # 导入每日详细数据
     try:
-        import_hm_detail_data(start_date,end_date)
+        import_hm_detail_data(start_date, end_date)
     except Exception as e:
         print(f"Error in import_hm_detail_data: {e}")
     
@@ -631,8 +629,9 @@ def incr_job(start_date, end_date):
 
     # 导入所有每日数据
     try:
-        import_all_daily_data(start_date,end_date)
+        import_all_daily_data(start_date, end_date)
     except Exception as e:
         print(f"Error in import_all_daily_data: {e}")
+    
 
-# incr_job('20250321','20250321')
+# incr_job('19000101','20250321')

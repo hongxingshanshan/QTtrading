@@ -225,6 +225,38 @@ def import_ths_member_data():
 
     print(f"同花顺概念板块成分数据已成功导入到数据库中")
 
+def init_job():
+    # 导入热钱信息
+    try:
+        import_hot_money_info()
+    except Exception as e:
+        # 如果导入热钱信息出错，打印错误信息
+        print(f"导入热钱信息出错: {e}")
+
+    # 导入股票基本信息
+    try:
+        import_stock_basic_info()
+    except Exception as e:
+        # 如果导入股票基本信息出错，打印错误信息
+        print(f"导入股票基本信息出错: {e}")
+
+    # 导入同花顺指数数据
+    try:
+        import_ths_index_data()
+    except Exception as e:
+        # 如果导入同花顺指数数据出错，打印错误信息
+        print(f"导入同花顺指数出错: {e}")
+
+    # 导入同花顺会员数据
+    try:
+        import_ths_member_data()
+    except Exception as e:
+        # 如果导入同花顺会员数据出错，打印错误信息
+        print(f"Error in 导入同花顺指数股票出错: {e}")
+        
+
+
+# init_job()
 
 
 # 全局初始化
