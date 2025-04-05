@@ -452,7 +452,7 @@ def import_top_list_data(start_date, end_date):
             data = df.to_dict(orient='records')
 
             # 插入数据到数据库，使用主键存在覆盖逻辑
-            for record in tqdm(data, desc=f"Importing top_trade_data data for {trade_date_str} page {offset} page {offset}", total=len(data), mininterval=0.1):
+            for record in tqdm(data, desc=f"Importing top_trade_data data for {trade_date_str} page {offset}", total=len(data), mininterval=0.1):
                 try:
                     cursor.execute('''
                         INSERT INTO top_trade_data (
@@ -634,4 +634,4 @@ def incr_job(start_date, end_date):
         print(f"Error in import_all_daily_data: {e}")
     
 
-# incr_job('19000101','20250321')
+incr_job('20250321','20250405')

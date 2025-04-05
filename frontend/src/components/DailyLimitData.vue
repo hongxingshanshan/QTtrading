@@ -24,8 +24,15 @@ export default {
       const response = await api.getDailyLimitData();
       this.dailyLimitData = response.data;
     },
+    formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+    },
     drawChart() {
-      const dates = this.dailyLimitData.map(item => item.trade_date);
+      const dates = this.dailyLimitData.map(item => this.formatDate(item.trade_date));
       const totalUps = this.dailyLimitData.map(item => parseInt(item.up_count));
       const upMain = this.dailyLimitData.map(item => parseInt(item.up_main));
       const upChuang = this.dailyLimitData.map(item => parseInt(item.up_chuang));
@@ -65,10 +72,10 @@ export default {
           boundaryGap: false,
           axisLabel: {
             formatter: (value) => {
-              const date = new Date(value.slice(0, 4) + '-' + value.slice(4, 6) + '-' + value.slice(6, 8));
+              const date = new Date(value);
               const day = date.getDay();
               const days = ['日', '一', '二', '三', '四', '五', '六'];
-              return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)} 周${days[day]}`;
+              return `${value} 周${days[day]}`;
             }
           }
         },
