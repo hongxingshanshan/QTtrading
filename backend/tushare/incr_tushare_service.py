@@ -634,4 +634,4 @@ def incr_job(start_date, end_date):
         print(f"Error in import_all_daily_data: {e}")
     
 
-incr_job('20250321','20250405')
+# incr_job('20250321','20250405')
