@@ -9,11 +9,6 @@ from backend.tushare.adj_factor_tushare import sync_adj_factors
 def incr_job():
     # 获取当前日期
     today = datetime.now().strftime('%Y%m%d')
-    # 导入复权因子数据
-    try:
-        sync_adj_factors(today,today)
-    except Exception as e:
-        print(f"Error in import_daily_limit_cpt_list: {e}")
     
     # 导入每日最强板块数据
     try:

@@ -1,6 +1,7 @@
 
 from backend.tushare import incr_tushare_service as its
 from backend.tushare import token
+pro=token.get_tushare().pro_api()
 
 def get_stock_daily_data(ts_code, start_date, end_date):
     """
@@ -27,11 +28,21 @@ def get_stock_daily_data(ts_code, start_date, end_date):
 
 # 示例：获取某只股票的日线行情数据
 if __name__ == "__main__":
-    ts_code = '000001.SZ'  # 示例股票代码
-    start_date = '20000626'
-    end_date = '20250321'
-    df = get_stock_daily_data(ts_code, start_date, end_date)
+    # 设置参数
+    ts_code = '000001.SZ'  # 股票代码
+    start_date = '20230101'  # 开始日期
+    end_date = '20231231'    # 结束日期
+    limit = 10  # 限制返回的行数
+    offset = 0  # 偏移量
+    # 拉取最强板块数据
+    df = pro.limit_cpt_list(
+            start_date=start_date,
+            end_date=end_date,
+            limit=limit,
+            offset=offset,
+            fields='ts_code,name,trade_date,days,up_stat,cons_nums,up_nums,pct_chg,rank'
+        )
     print(df)
-    
     # its.import_daily_data_for_stock(ts_code, start_date, end_date)
     # its.import_all_daily_data('19000101', '20250321')
+    
