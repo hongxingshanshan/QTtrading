@@ -1,0 +1,16 @@
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 596-964-863
+127.0.0.1 - - [24/Apr/2026 04:32:24] "GET /api/get_stock_basic_info?page=1 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Apr/2026 04:32:31] "GET /api/get_stock_basic_info?page=1&pageSize=5 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Apr/2026 04:32:36] "GET /api/get_stock_basic_info?page=1&pageSize=5 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Apr/2026 04:32:37] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [24/Apr/2026 04:32:40] "GET / HTTP/1.1" 404 -
+127.0.0.1 - - [24/Apr/2026 04:32:51] "GET /api/get_daily_hotmoney_trade_data?hmName=&tradeDate=&tsName=&tsCode=&page=1&page_size=10 HTTP/1.1" 200 -
+127.0.0.1 - - [24/Apr/2026 04:32:52] "GET /api/get_daily_limit_data HTTP/1.1" 200 -
+127.0.0.1 - - [24/Apr/2026 04:32:54] "GET /api/get_hotmoney_data?name=&page=1&pageSize=15 HTTP/1.1" 200 -
