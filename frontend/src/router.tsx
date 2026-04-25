@@ -8,41 +8,48 @@ import StockTrend from '@/modules/StockTrend'
 import DailyLimit from '@/modules/DailyLimit'
 import SectorLimit from '@/modules/SectorLimit'
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+        {
+          path: 'hotmoney',
+          element: <HotMoney />,
+        },
+        {
+          path: 'hotmoney/info',
+          element: <HotMoneyInfo />,
+        },
+        {
+          path: 'stock',
+          element: <Stock />,
+        },
+        {
+          path: 'stock/trend/:code',
+          element: <StockTrend />,
+        },
+        {
+          path: 'limit',
+          element: <DailyLimit />,
+        },
+        {
+          path: 'sector',
+          element: <SectorLimit />,
+        },
+      ],
+    },
+  ],
   {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: 'hotmoney',
-        element: <HotMoney />,
-      },
-      {
-        path: 'hotmoney/info',
-        element: <HotMoneyInfo />,
-      },
-      {
-        path: 'stock',
-        element: <Stock />,
-      },
-      {
-        path: 'stock/trend/:code',
-        element: <StockTrend />,
-      },
-      {
-        path: 'limit',
-        element: <DailyLimit />,
-      },
-      {
-        path: 'sector',
-        element: <SectorLimit />,
-      },
-    ],
-  },
-])
+    future: {
+      v7_startTransition: true,
+    },
+  }
+)
 
 export default router

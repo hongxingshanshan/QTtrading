@@ -1,3 +1,0 @@
-Flask
-tushare
-mysql-connector-python

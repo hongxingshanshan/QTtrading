@@ -1,9 +1,10 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
 
 
 class DailyDataItem(BaseModel):
-    trade_date: Optional[str] = None
+    ts_code: Optional[str] = None
+    trade_date: Optional[Any] = None
     open: Optional[float] = None
     high: Optional[float] = None
     low: Optional[float] = None
@@ -11,7 +12,7 @@ class DailyDataItem(BaseModel):
     pre_close: Optional[float] = None
     price_change: Optional[float] = None
     pct_chg: Optional[float] = None
-    vol: Optional[int] = None
+    vol: Optional[Any] = None
     amount: Optional[float] = None
 
     class Config:

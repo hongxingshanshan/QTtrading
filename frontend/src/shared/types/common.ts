@@ -63,3 +63,52 @@ export interface ThsIndex {
   ts_code?: string
   name?: string
 }
+
+// 股票走势图相关类型
+export interface StockTrendBasic {
+  ts_code?: string
+  name?: string
+  industry?: string
+}
+
+export interface StockTrendLatest {
+  close?: number
+  pct_chg?: number
+  vol?: number
+  amount?: number
+  open?: number
+  high?: number
+  low?: number
+  pre_close?: number
+  price_change?: number
+}
+
+export interface StockTrendKlineItem {
+  trade_date?: string
+  open?: number
+  high?: number
+  low?: number
+  close?: number
+  pre_close?: number // 前收盘价
+  vol?: number
+  amount?: number
+  pct_chg?: number
+}
+
+export interface StockTrendMA {
+  ma5: (number | null)[]
+  ma10: (number | null)[]
+  ma20: (number | null)[]
+  ma30: (number | null)[]
+  ma60: (number | null)[]
+  ma90: (number | null)[]
+  ma125: (number | null)[]
+  ma250: (number | null)[]
+}
+
+export interface StockTrendResponse {
+  basic: StockTrendBasic
+  latest: StockTrendLatest
+  kline: StockTrendKlineItem[]
+  ma: StockTrendMA
+}

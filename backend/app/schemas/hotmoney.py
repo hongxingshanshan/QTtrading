@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
 
 
 class HotMoneyInfoItem(BaseModel):
@@ -18,13 +18,16 @@ class HotMoneyQuery(BaseModel):
 
 
 class DailyHotMoneyTradeItem(BaseModel):
-    trade_date: Optional[str] = None
+    id: Optional[int] = None
+    trade_date: Optional[Any] = None
     ts_code: Optional[str] = None
     ts_name: Optional[str] = None
+    buy_amount: Optional[Any] = None
+    sell_amount: Optional[Any] = None
+    net_amount: Optional[Any] = None
     hm_name: Optional[str] = None
-    buy_amount: Optional[str] = None
-    sell_amount: Optional[str] = None
-    net_amount: Optional[str] = None
+    hm_orgs: Optional[str] = None
+    tag: Optional[str] = None
 
     class Config:
         from_attributes = True
