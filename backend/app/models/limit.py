@@ -1,11 +1,13 @@
-from sqlalchemy import Column, String, Float, BigInteger
+from sqlalchemy import Column, String, Float, PrimaryKeyConstraint
 from app.models.base import Base
 
 
 class DailyLimitData(Base):
     __tablename__ = "daily_limit_data"
+    __table_args__ = (
+        PrimaryKeyConstraint('trade_date', 'ts_code'),
+    )
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
     trade_date = Column(String(10), comment="交易日期")
     ts_code = Column(String(20), comment="股票代码")
     name = Column(String(50), comment="股票名称")
