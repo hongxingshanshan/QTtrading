@@ -1,5 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom'
 import Layout from '@/shared/components/Layout'
+import Home from '@/modules/Home'
+import HotMoney from '@/modules/HotMoney'
+import HotMoneyInfo from '@/modules/HotMoneyInfo'
+import Stock from '@/modules/Stock'
+import StockTrend from '@/modules/StockTrend'
+import DailyLimit from '@/modules/DailyLimit'
+import SectorLimit from '@/modules/SectorLimit'
 
 const router = createBrowserRouter([
   {
@@ -8,31 +15,31 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <div>首页</div>,
+        element: <Home />,
       },
       {
         path: 'hotmoney',
-        element: <div>龙虎榜</div>,
+        element: <HotMoney />,
       },
       {
         path: 'hotmoney/info',
-        element: <div>游资介绍</div>,
+        element: <HotMoneyInfo />,
       },
       {
         path: 'stock',
-        element: <div>股票信息</div>,
+        element: <Stock />,
       },
       {
         path: 'stock/trend/:code',
-        element: <div>股票走势</div>,
+        element: <StockTrend />,
       },
       {
         path: 'limit',
-        element: <div>涨跌停</div>,
+        element: <DailyLimit />,
       },
       {
         path: 'sector',
-        element: <div>板块行情</div>,
+        element: <SectorLimit />,
       },
     ],
   },
