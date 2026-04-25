@@ -1,23 +1,31 @@
-"""初始化任务 - 每天凌晨3点执行"""
+"""
+初始化任务 - 每天凌晨3点执行
+导入静态基础数据：股票基本信息、游资信息、同花顺指数
+"""
+import pandas as pd
 from loguru import logger
-from tqdm import tqdm
 from sqlalchemy import text
 from app.core.database import SessionLocal
-from .tushare_client import pro
+from .tushare_client import get_pro_api
 
 
 def import_stock_basic_info():
-    """获取股票基本信息并导入stock_basic_info表"""
+    """导入股票基本信息"""
     logger.info("开始导入股票基本信息...")
 
     try:
+        pro = get_pro_api()
         df = pro.stock_basic(fields=[
             "ts_code", "symbol", "name", "area", "industry", "cnspell",
             "market", "list_date", "act_name", "act_ent_type", "fullname",
             "enname", "exchange", "curr_type", "list_status", "delist_date", "is_hs"
         ])
 
-        df = df.fillna(None)
+        if df.empty:
+            logger.warning("股票基本信息为空")
+            return
+
+        df = df.where(pd.notna(df), None)
         data = df.to_dict(orient='records')
 
         db = SessionLocal()
@@ -48,12 +56,18 @@ def import_stock_basic_info():
 
 
 def import_hot_money_info():
-    """获取游资信息并导入hot_money_info表"""
+    """导入游资信息"""
     logger.info("开始导入游资信息...")
 
     try:
+        pro = get_pro_api()
         df = pro.hm_list(fields=["name", "desc", "orgs"])
-        df = df.fillna(None)
+
+        if df.empty:
+            logger.warning("游资信息为空")
+            return
+
+        df = df.where(pd.notna(df), None)
         data = df.to_dict(orient='records')
 
         db = SessionLocal()
@@ -74,12 +88,18 @@ def import_hot_money_info():
 
 
 def import_ths_index_data():
-    """获取同花顺概念和行业指数数据并导入ths_index表"""
+    """导入同花顺概念和行业指数数据"""
     logger.info("开始导入同花顺指数数据...")
 
     try:
+        pro = get_pro_api()
         df = pro.ths_index()
-        df = df.fillna(None)
+
+        if df.empty:
+            logger.warning("同花顺指数数据为空")
+            return
+
+        df = df.where(pd.notna(df), None)
         data = df.to_dict(orient='records')
 
         db = SessionLocal()
@@ -97,15 +117,18 @@ def import_ths_index_data():
         finally:
             db.close()
     except Exception as e:
-        logger.error(f"导入同花顺指数出错: {e}")
+        if "没有接口" in str(e) or "权限" in str(e):
+            logger.warning("同花顺指数接口权限不足，跳过导入。需要6000积分权限。")
+        else:
+            logger.error(f"导入同花顺指数出错: {e}")
 
 
 def import_ths_member_data():
-    """获取同花顺概念板块成分数据并导入ths_member表"""
+    """导入同花顺概念板块成分数据"""
     logger.info("开始导入同花顺概念板块成分数据...")
 
     try:
-        # 获取所有板块指数代码
+        pro = get_pro_api()
         ths_index_df = pro.ths_index()
         ts_codes = ths_index_df['ts_code'].tolist()
 
@@ -116,42 +139,40 @@ def import_ths_member_data():
                 if idx % 50 == 0:
                     logger.info(f"导入进度: {idx}/{total}")
 
-                offset = 0
-                limit = 5000
+                df = pro.ths_member(ts_code=ts_code)
+                if df.empty:
+                    continue
 
-                while True:
-                    df = pro.ths_member(ts_code=ts_code, limit=limit, offset=offset)
-                    if df.empty:
-                        break
+                df = df.where(pd.notna(df), None)
+                data = df.to_dict(orient='records')
 
-                    df = df.fillna(None)
-                    data = df.to_dict(orient='records')
+                for record in data:
+                    db.execute(text("""
+                        INSERT INTO ths_member (ts_code, con_code, con_name, weight, in_date, out_date, is_new)
+                        VALUES (:ts_code, :con_code, :con_name, :weight, :in_date, :out_date, :is_new)
+                        ON DUPLICATE KEY UPDATE
+                            con_name=VALUES(con_name), weight=VALUES(weight),
+                            in_date=VALUES(in_date), out_date=VALUES(out_date), is_new=VALUES(is_new)
+                    """), record)
 
-                    for record in data:
-                        db.execute(text("""
-                            INSERT INTO ths_member (ts_code, con_code, con_name, weight, in_date, out_date, is_new)
-                            VALUES (:ts_code, :con_code, :con_name, :weight, :in_date, :out_date, :is_new)
-                            ON DUPLICATE KEY UPDATE
-                                con_name=VALUES(con_name), weight=VALUES(weight),
-                                in_date=VALUES(in_date), out_date=VALUES(out_date), is_new=VALUES(is_new)
-                        """), record)
+                db.commit()
 
-                    db.commit()
-                    offset += limit
-
-            logger.info(f"同花顺概念板块成分数据导入完成")
+            logger.info("同花顺概念板块成分数据导入完成")
         finally:
             db.close()
     except Exception as e:
-        logger.error(f"导入同花顺概念板块成分出错: {e}")
+        if "没有接口" in str(e) or "权限" in str(e):
+            logger.warning("同花顺概念成分接口权限不足，跳过导入。需要6000积分权限。")
+        else:
+            logger.error(f"导入同花顺概念板块成分出错: {e}")
 
 
 def run_init_jobs():
     """运行所有初始化任务"""
     logger.info("========== 开始执行初始化任务 ==========")
 
-    import_hot_money_info()
     import_stock_basic_info()
+    import_hot_money_info()
     import_ths_index_data()
     import_ths_member_data()
 

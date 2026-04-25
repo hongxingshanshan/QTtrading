@@ -1,8 +1,9 @@
+"""定时任务调度器"""
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from datetime import datetime
-from app.core.logging import logger
-from tasks.jobs.trading_calendar import is_trading_day
+from loguru import logger
+from .trading_calendar import is_trading_day
 
 scheduler = BackgroundScheduler()
 
@@ -11,11 +12,11 @@ def check_and_run_incr_jobs():
     """检查是否为交易日，如果是则运行增量任务"""
     today = datetime.now()
     if is_trading_day(today):
-        logger.info(f"今天是交易日，执行增量任务")
-        from tasks.incr_jobs import run_incr_jobs
+        logger.info("今天是交易日，执行增量任务")
+        from .incr_jobs import run_incr_jobs
         run_incr_jobs()
     else:
-        logger.info(f"今天不是交易日，跳过增量任务")
+        logger.info("今天不是交易日，跳过增量任务")
 
 
 def start_scheduler():
@@ -47,12 +48,21 @@ def start_scheduler():
         replace_existing=True
     )
 
-    # 每天 10:00 执行复权因子同步
+    # 每周日凌晨4点执行周K线导入
     scheduler.add_job(
-        lambda: __import__('tasks.adj_factor_job', fromlist=['run_adj_factor_job']).run_adj_factor_job(),
-        CronTrigger(hour=10, minute=0),
-        id='adj_factor_job',
-        name='复权因子同步',
+        lambda: __import__('tasks.kline_jobs', fromlist=['import_weekly_data']).import_weekly_data(),
+        CronTrigger(day_of_week='sun', hour=4, minute=0),
+        id='weekly_kline_job',
+        name='周K线导入',
+        replace_existing=True
+    )
+
+    # 每月1号凌晨5点执行月K线导入
+    scheduler.add_job(
+        lambda: __import__('tasks.kline_jobs', fromlist=['import_monthly_data']).import_monthly_data(),
+        CronTrigger(day=1, hour=5, minute=0),
+        id='monthly_kline_job',
+        name='月K线导入',
         replace_existing=True
     )
 
@@ -61,7 +71,8 @@ def start_scheduler():
     logger.info("已注册任务:")
     logger.info("  - 初始化任务: 每天 03:00")
     logger.info("  - 增量任务: 交易日 17:00, 19:00")
-    logger.info("  - 复权因子同步: 每天 10:00")
+    logger.info("  - 周K线导入: 每周日 04:00")
+    logger.info("  - 月K线导入: 每月1号 05:00")
 
 
 def stop_scheduler():
