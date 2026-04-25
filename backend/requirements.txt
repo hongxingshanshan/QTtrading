@@ -19,7 +19,7 @@ tushare==1.4.3
 
 # 定时任务
 apscheduler==3.10.4
-chinese-calendar==2.0.0
+chinese-calendar==1.11.0
 
 # 日志
 loguru==0.7.2

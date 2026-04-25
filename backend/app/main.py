@@ -31,6 +31,18 @@ def create_app() -> FastAPI:
     # 注册路由
     app.include_router(api_router, prefix="/api")
 
+    # 启动事件：启动定时任务调度器
+    @app.on_event("startup")
+    async def startup_event():
+        from tasks.scheduler import start_scheduler
+        start_scheduler()
+
+    # 关闭事件：停止定时任务调度器
+    @app.on_event("shutdown")
+    async def shutdown_event():
+        from tasks.scheduler import stop_scheduler
+        stop_scheduler()
+
     return app
 
 
