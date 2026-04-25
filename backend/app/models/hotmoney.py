@@ -12,7 +12,7 @@ class HotMoneyInfo(Base):
 
 
 class DailyHotMoneyTradeData(Base):
-    __tablename__ = "daily_hotmoney_trade_data"
+    __tablename__ = "daily_hot_money_trading"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     trade_date = Column(String(10), comment="交易日期")
