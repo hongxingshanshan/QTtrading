@@ -63,7 +63,12 @@ def calculate_rsi(df: pd.DataFrame, periods: list = [6, 12, 24]) -> pd.DataFrame
         avg_gain = gain.rolling(window=n, min_periods=n).mean()
         avg_loss = loss.rolling(window=n, min_periods=n).mean()
 
-        rs = avg_gain / avg_loss.replace(0, np.inf)
+        # 正确处理 avg_loss = 0 的情况
+        # 当 avg_loss = 0 且 avg_gain > 0 时，RSI = 100（全部上涨）
+        # 当 avg_loss = 0 且 avg_gain = 0 时，RSI = 50（没有变化）
+        rs = np.where(avg_loss == 0,
+                      np.where(avg_gain == 0, 1, np.inf),  # 无变化时 rs=1 得 RSI=50，有上涨时 rs=inf 得 RSI=100
+                      avg_gain / avg_loss)
         df[f'rsi{n}'] = 100 - (100 / (1 + rs))
 
     return df
