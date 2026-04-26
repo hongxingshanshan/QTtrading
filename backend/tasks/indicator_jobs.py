@@ -16,7 +16,7 @@ def run_indicator_incremental_job():
     logger.info("开始执行增量指标计算...")
 
     try:
-        result = run_incremental_calculation(days=30, max_workers=8)
+        result = run_incremental_calculation(days=30)
         logger.info(f"增量指标计算完成: 成功={result['success']}, 错误={result['error']}, 耗时={result['elapsed_seconds']:.1f}秒")
     except Exception as e:
         logger.error(f"增量指标计算失败: {e}")

@@ -226,9 +226,10 @@ class StockScreener:
             else:
                 query = query.where(or_(*where_conditions))
 
-            # 统计总数
-            count_query = text(f"SELECT COUNT(*) FROM ({str(query)}) AS t")
-            total = self.db.execute(count_query).scalar()
+            # 统计总数 - 使用 subquery 方式
+            from sqlalchemy import func
+            count_subquery = query.subquery()
+            total = self.db.query(func.count()).select_from(count_subquery).scalar()
 
             # 排序
             order_field = self._get_order_field(order_by)
