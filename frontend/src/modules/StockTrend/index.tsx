@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Spin, Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
@@ -16,6 +16,7 @@ import type { StockTrendResponse } from '@/shared/types/common'
 function StockTrend() {
   const { code } = useParams<{ code: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
   const chartInstancesRef = useRef<echarts.ECharts[]>([])
   const connectedRef = useRef(false)
 
@@ -31,7 +32,7 @@ function StockTrend() {
         period,
         adj_type: adjType,
       })
-      return response as StockTrendResponse
+      return response as unknown as StockTrendResponse
     },
     enabled: !!code,
     staleTime: 60000,
@@ -77,15 +78,25 @@ function StockTrend() {
     )
   }
 
+  // 返回上一页，如果没有历史记录则返回股票列表
+  const handleGoBack = () => {
+    // 检查是否有历史记录可以返回
+    if (window.history.length > 1 && location.key !== 'default') {
+      navigate(-1)
+    } else {
+      navigate('/stock')
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="bg-white border-b px-4 py-2">
         <Button
           type="text"
           icon={<ArrowLeftOutlined />}
-          onClick={() => navigate('/stock')}
+          onClick={handleGoBack}
         >
-          返回股票列表
+          返回
         </Button>
       </div>
       <ToolBar

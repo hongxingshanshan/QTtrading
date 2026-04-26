@@ -31,7 +31,7 @@ class StockRepository(BaseRepository[StockBasicInfo]):
         if name:
             query = query.filter(self.model.name.like(f"%{name}%"))
         if industry:
-            query = query.filter(self.model.industry == industry)
+            query = query.filter(self.model.industry.like(f"%{industry}%"))
         if start_date:
             query = query.filter(self.model.list_date >= start_date)
         if end_date:
