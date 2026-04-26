@@ -7,6 +7,7 @@ import Stock from '@/modules/Stock'
 import StockTrend from '@/modules/StockTrend'
 import DailyLimit from '@/modules/DailyLimit'
 import SectorLimit from '@/modules/SectorLimit'
+import StockScreen from '@/modules/StockScreen'
 
 const router = createBrowserRouter(
   [
@@ -41,6 +42,10 @@ const router = createBrowserRouter(
         {
           path: 'sector',
           element: <SectorLimit />,
+        },
+        {
+          path: 'screen',
+          element: <StockScreen />,
         },
       ],
     },

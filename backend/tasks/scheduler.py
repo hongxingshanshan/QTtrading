@@ -84,6 +84,33 @@ def start_scheduler():
         replace_existing=True
     )
 
+    # 交易日 18:00 执行每日基本面数据采集（在日线数据更新后）
+    scheduler.add_job(
+        lambda: __import__('tasks.basic_jobs', fromlist=['run_basic_incremental_job']).run_basic_incremental_job(),
+        CronTrigger(hour=18, minute=0),
+        id='basic_incr_job',
+        name='增量基本面数据采集',
+        replace_existing=True
+    )
+
+    # 每季度首月15日 02:00 执行财务指标采集（1/4/7/10月）
+    scheduler.add_job(
+        lambda: __import__('tasks.fina_jobs', fromlist=['run_fina_incremental_job']).run_fina_incremental_job(),
+        CronTrigger(month='1,4,7,10', day=15, hour=2, minute=0),
+        id='fina_incr_job',
+        name='增量财务指标采集',
+        replace_existing=True
+    )
+
+    # 每月1号凌晨3点执行全量基本面数据补充
+    scheduler.add_job(
+        lambda: __import__('tasks.basic_jobs', fromlist=['run_basic_full_job']).run_basic_full_job(),
+        CronTrigger(day=1, hour=3, minute=30),
+        id='basic_full_job',
+        name='全量基本面数据补充',
+        replace_existing=True
+    )
+
     scheduler.start()
     logger.info("定时任务调度器已启动")
     logger.info("已注册任务:")
@@ -93,6 +120,9 @@ def start_scheduler():
     logger.info("  - 月K线导入: 每月1号 05:00")
     logger.info("  - 增量指标计算: 每天 20:00")
     logger.info("  - 全量指标计算: 每周日 06:00")
+    logger.info("  - 增量基本面数据采集: 每天 18:00")
+    logger.info("  - 增量财务指标采集: 每季度首月15日 02:00")
+    logger.info("  - 全量基本面数据补充: 每月1号 03:30")
 
 
 def stop_scheduler():

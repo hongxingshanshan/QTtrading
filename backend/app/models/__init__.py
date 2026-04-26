@@ -6,6 +6,8 @@ from app.models.limit import DailyLimitData
 from app.models.sector import DailySectorLimitData, ThsIndex
 from app.models.kline import WeeklyData, MonthlyData, AdjFactor
 from app.models.indicator import DailyIndicator
+from app.models.daily_basic import DailyBasic
+from app.models.fina_indicator import FinaIndicator
 
 __all__ = [
     "Base",
@@ -20,4 +22,6 @@ __all__ = [
     "MonthlyData",
     "AdjFactor",
     "DailyIndicator",
+    "DailyBasic",
+    "FinaIndicator",
 ]

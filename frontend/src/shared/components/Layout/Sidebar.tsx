@@ -6,6 +6,7 @@ import {
   RiseOutlined,
   BarChartOutlined,
   TeamOutlined,
+  FilterOutlined,
 } from '@ant-design/icons'
 
 const menuItems = [
@@ -13,6 +14,11 @@ const menuItems = [
     key: '/',
     icon: <HomeOutlined />,
     label: '首页',
+  },
+  {
+    key: '/screen',
+    icon: <FilterOutlined />,
+    label: '智能选股',
   },
   {
     key: '/hotmoney',
