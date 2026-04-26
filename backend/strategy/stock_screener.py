@@ -552,16 +552,16 @@ class StockScreener:
                 'name': row.name,
                 'industry': row.industry,
                 'area': row.area,
-                'close': float(row.close) if row.close else None,
-                'pct_change': float(row.pct_chg) if row.pct_chg else None,
+                'close': float(row.close) if row.close is not None else None,
+                'pct_change': float(row.pct_chg) if row.pct_chg is not None else None,
                 'indicators': {
-                    'rsi6': float(indicator.rsi6) if indicator.rsi6 else None,
-                    'j_value': float(indicator.j_value) if indicator.j_value else None,
-                    'macd_hist': float(indicator.macd_hist) if indicator.macd_hist else None,
-                    'vol_ratio': float(indicator.vol_ratio) if indicator.vol_ratio else None,
-                    'k_value': float(indicator.k_value) if indicator.k_value else None,
-                    'd_value': float(indicator.d_value) if indicator.d_value else None,
-                    'boll_position': float(indicator.boll_position) if indicator.boll_position else None,
+                    'rsi6': float(indicator.rsi6) if indicator.rsi6 is not None else None,
+                    'j_value': float(indicator.j_value) if indicator.j_value is not None else None,
+                    'macd_hist': float(indicator.macd_hist) if indicator.macd_hist is not None else None,
+                    'vol_ratio': float(indicator.vol_ratio) if indicator.vol_ratio is not None else None,
+                    'k_value': float(indicator.k_value) if indicator.k_value is not None else None,
+                    'd_value': float(indicator.d_value) if indicator.d_value is not None else None,
+                    'boll_position': float(indicator.boll_position) if indicator.boll_position is not None else None,
                 }
             })
         return stocks
