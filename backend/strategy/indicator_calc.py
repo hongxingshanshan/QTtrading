@@ -67,9 +67,11 @@ def calculate_rsi(df: pd.DataFrame, periods: list = [6, 12, 24]) -> pd.DataFrame
         # 当 avg_loss = 0 且 avg_gain > 0 时，RSI = 100（全部上涨）
         # 当 avg_loss = 0 且 avg_gain = 0 时，RSI = 50（没有变化）
         rs = np.where(avg_loss == 0,
-                      np.where(avg_gain == 0, 1, np.inf),  # 无变化时 rs=1 得 RSI=50，有上涨时 rs=inf 得 RSI=100
+                      np.where(avg_gain == 0, 1, 1e10),  # 无变化时 rs=1 得 RSI=50，有上涨时用极大值得 RSI≈100
                       avg_gain / avg_loss)
-        df[f'rsi{n}'] = 100 - (100 / (1 + rs))
+        rsi = 100 - (100 / (1 + rs))
+        # 将超出范围的值限制在 0-100 之间
+        df[f'rsi{n}'] = np.clip(rsi, 0, 100)
 
     return df
 
@@ -93,8 +95,13 @@ def calculate_boll(df: pd.DataFrame, n: int = 20, k: float = 2) -> pd.DataFrame:
     df['boll_upper'] = df['boll_mid'] + k * std
     df['boll_lower'] = df['boll_mid'] - k * std
 
-    df['boll_position'] = (df['close'] - df['boll_lower']) / (df['boll_upper'] - df['boll_lower'])
-    df['boll_width'] = (df['boll_upper'] - df['boll_lower']) / df['boll_mid']
+    # 处理除零：当 boll_upper == boll_lower 时，position 设为 0.5
+    boll_range = df['boll_upper'] - df['boll_lower']
+    df['boll_position'] = np.where(boll_range == 0, 0.5,
+                                    (df['close'] - df['boll_lower']) / boll_range)
+    # 处理除零：当 boll_mid == 0 时，width 设为 0
+    df['boll_width'] = np.where(df['boll_mid'] == 0, 0,
+                                 (df['boll_upper'] - df['boll_lower']) / df['boll_mid'])
 
     return df
 
@@ -104,7 +111,8 @@ def calculate_cci(df: pd.DataFrame, n: int = 14) -> pd.DataFrame:
     tp = (df['high'] + df['low'] + df['close']) / 3
     ma = tp.rolling(window=n, min_periods=n).mean()
     md = tp.rolling(window=n, min_periods=n).apply(lambda x: np.abs(x - x.mean()).mean())
-    df['cci'] = (tp - ma) / (0.015 * md)
+    # 处理除零：当 md == 0 时，cci 设为 0
+    df['cci'] = np.where(md == 0, 0, (tp - ma) / (0.015 * md))
     return df
 
 
@@ -113,7 +121,10 @@ def calculate_wr(df: pd.DataFrame, periods: list = [10, 14]) -> pd.DataFrame:
     for n in periods:
         high_n = df['high'].rolling(window=n, min_periods=n).max()
         low_n = df['low'].rolling(window=n, min_periods=n).min()
-        df[f'wr{n}'] = (high_n - df['close']) / (high_n - low_n) * 100
+        # 处理除零：当 high_n == low_n 时，wr 设为 50
+        high_low_range = high_n - low_n
+        df[f'wr{n}'] = np.where(high_low_range == 0, 50,
+                                 (high_n - df['close']) / high_low_range * 100)
     return df
 
 
@@ -131,7 +142,9 @@ def calculate_ma_deviation(df: pd.DataFrame) -> pd.DataFrame:
     """计算均线偏离度"""
     for n in [5, 10, 20, 30, 60, 120, 250]:
         if f'ma{n}' in df.columns:
-            df[f'ma{n}_deviation'] = (df['close'] - df[f'ma{n}']) / df[f'ma{n}']
+            # 处理除零：当 ma == 0 时，deviation 设为 0
+            df[f'ma{n}_deviation'] = np.where(df[f'ma{n}'] == 0, 0,
+                                               (df['close'] - df[f'ma{n}']) / df[f'ma{n}'])
 
     def check_ma_alignment(row):
         mas = [row.get(f'ma{n}', np.nan) for n in [5, 10, 20, 30, 60]]
@@ -163,22 +176,28 @@ def calculate_price_factors(df: pd.DataFrame) -> pd.DataFrame:
 
     # 距20日高点回撤
     df['high_20d'] = df['high'].rolling(window=20, min_periods=1).max()
-    df['drawdown_20d'] = (df['close'] - df['high_20d']) / df['high_20d']
+    df['drawdown_20d'] = np.where(df['high_20d'] == 0, 0,
+                                   (df['close'] - df['high_20d']) / df['high_20d'])
 
     # 距60日高点回撤
     df['high_60d'] = df['high'].rolling(window=60, min_periods=1).max()
-    df['drawdown_60d'] = (df['close'] - df['high_60d']) / df['high_60d']
+    df['drawdown_60d'] = np.where(df['high_60d'] == 0, 0,
+                                   (df['close'] - df['high_60d']) / df['high_60d'])
 
     # 距20日低点反弹
     df['low_20d'] = df['low'].rolling(window=20, min_periods=1).min()
-    df['rebound_20d'] = (df['close'] - df['low_20d']) / df['low_20d']
+    df['rebound_20d'] = np.where(df['low_20d'] == 0, 0,
+                                  (df['close'] - df['low_20d']) / df['low_20d'])
 
     # 距60日低点反弹
     df['low_60d'] = df['low'].rolling(window=60, min_periods=1).min()
-    df['rebound_60d'] = (df['close'] - df['low_60d']) / df['low_60d']
+    df['rebound_60d'] = np.where(df['low_60d'] == 0, 0,
+                                  (df['close'] - df['low_60d']) / df['low_60d'])
 
     # 振幅
-    df['amplitude'] = (df['high'] - df['low']) / df['close'].shift(1)
+    prev_close = df['close'].shift(1)
+    df['amplitude'] = np.where(prev_close == 0, 0,
+                                (df['high'] - df['low']) / prev_close)
 
     # 涨跌幅
     df['pct_change'] = df['close'].pct_change()
@@ -195,8 +214,9 @@ def calculate_volume_factors(df: pd.DataFrame) -> pd.DataFrame:
     df['vol_ma10'] = df['vol'].rolling(window=10, min_periods=10).mean()
     df['vol_ma20'] = df['vol'].rolling(window=20, min_periods=20).mean()
 
-    df['vol_ratio'] = df['vol'] / df['vol_ma5']
-    df['vol_ratio_10'] = df['vol'] / df['vol_ma10']
+    # 处理除零：当 vol_ma 为 0 时，ratio 设为 0
+    df['vol_ratio'] = np.where(df['vol_ma5'] == 0, 0, df['vol'] / df['vol_ma5'])
+    df['vol_ratio_10'] = np.where(df['vol_ma10'] == 0, 0, df['vol'] / df['vol_ma10'])
 
     return df
 
@@ -244,7 +264,10 @@ def calculate_vr(df: pd.DataFrame, n: int = 26) -> pd.DataFrame:
     down_sum = down_vol.rolling(window=n, min_periods=n).sum()
     equal_sum = equal_vol.rolling(window=n, min_periods=n).sum()
 
-    df['vr'] = (up_sum + equal_sum / 2) / (down_sum + equal_sum / 2) * 100
+    # 处理除零：当分母为 0 时，vr 设为 100（表示无下跌日）
+    denominator = down_sum + equal_sum / 2
+    df['vr'] = np.where(denominator == 0, 100,
+                         (up_sum + equal_sum / 2) / denominator * 100)
 
     return df
 
