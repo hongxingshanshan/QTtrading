@@ -5,6 +5,10 @@
 from loguru import logger
 from datetime import datetime
 from strategy.indicator_calc import run_incremental_calculation, run_indicator_calculation
+from app.core.logging import setup_logging
+
+# 初始化日志配置
+setup_logging()
 
 
 def run_indicator_incremental_job():

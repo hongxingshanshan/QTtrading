@@ -12,6 +12,11 @@ import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import multiprocessing
 
+from app.core.logging import setup_logging
+
+# 初始化日志配置
+setup_logging()
+
 # ============== 数据加载（本地文件） ==============
 
 def load_local_data() -> tuple:

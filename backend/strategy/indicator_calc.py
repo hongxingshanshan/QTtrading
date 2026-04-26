@@ -23,6 +23,10 @@ from sqlalchemy import text
 
 from app.core.database import SessionLocal, engine
 from app.models.indicator import DailyIndicator
+from app.core.logging import setup_logging
+
+# 初始化日志配置
+setup_logging()
 
 
 # ============== 技术指标计算函数 ==============

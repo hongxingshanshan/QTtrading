@@ -20,17 +20,10 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import multiprocessing
 from datetime import datetime
 
-# 初始化日志
-log_dir = os.path.join(SCRIPT_DIR, "logs")
-os.makedirs(log_dir, exist_ok=True)
-logger.add(
-    os.path.join(log_dir, "strategy.log"),
-    level="INFO",
-    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
-    rotation="10 MB",
-    retention="30 days",
-    encoding="utf-8",
-)
+from app.core.logging import setup_logging
+
+# 初始化日志配置（统一日志管理）
+setup_logging()
 
 
 # ============== 技术指标计算 ==============
