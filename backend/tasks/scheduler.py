@@ -66,6 +66,24 @@ def start_scheduler():
         replace_existing=True
     )
 
+    # 交易日 20:00 执行增量指标计算（在日线数据更新后）
+    scheduler.add_job(
+        lambda: __import__('tasks.indicator_jobs', fromlist=['run_indicator_incremental_job']).run_indicator_incremental_job(),
+        CronTrigger(hour=20, minute=0),
+        id='indicator_incr_job',
+        name='增量指标计算',
+        replace_existing=True
+    )
+
+    # 每周日凌晨6点执行全量指标计算
+    scheduler.add_job(
+        lambda: __import__('tasks.indicator_jobs', fromlist=['run_indicator_full_job']).run_indicator_full_job(),
+        CronTrigger(day_of_week='sun', hour=6, minute=0),
+        id='indicator_full_job',
+        name='全量指标计算',
+        replace_existing=True
+    )
+
     scheduler.start()
     logger.info("定时任务调度器已启动")
     logger.info("已注册任务:")
@@ -73,6 +91,8 @@ def start_scheduler():
     logger.info("  - 增量任务: 交易日 17:00, 19:00")
     logger.info("  - 周K线导入: 每周日 04:00")
     logger.info("  - 月K线导入: 每月1号 05:00")
+    logger.info("  - 增量指标计算: 每天 20:00")
+    logger.info("  - 全量指标计算: 每周日 06:00")
 
 
 def stop_scheduler():

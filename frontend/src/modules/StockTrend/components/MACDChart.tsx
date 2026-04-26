@@ -1,5 +1,6 @@
 import ReactECharts from 'echarts-for-react'
 import type { ECharts } from 'echarts'
+import { formatDate } from '@/shared/utils/format'
 import type { StockTrendKlineItem } from '@/shared/types/common'
 
 interface MACDChartProps {
@@ -72,7 +73,7 @@ function calculateEMA(data: number[], period: number): (number | null)[] {
 
 function MACDChart({ kline, onChartReady }: MACDChartProps) {
   const { dif, dea, macd } = calculateMACD(kline)
-  const dates = kline.map((item) => item.trade_date || '')
+  const dates = kline.map((item) => formatDate(item.trade_date) || '')
 
   const macdBarData = macd.map((value) => ({
     value,

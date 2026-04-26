@@ -1,0 +1,2 @@
+j_threshold,rsi_threshold,vol_ratio_min,max_positions,stop_loss,take_profit_fixed,take_profit_trigger,take_profit_trailing,max_hold_days,trades,win_rate,pl_ratio,return,drawdown,sharpe,total_signals,j_pass,rsi_pass,vol_pass,score
+20,30,1.0,5,-0.03,0.06,0.03,0.02,5,321,0.4517133956386293,1.3840051317092537,0.1471687882453958,-0.10627711200977932,0.6839060467897081,46415,225394,195885,354201,0.9560446925100952

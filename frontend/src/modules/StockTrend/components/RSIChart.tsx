@@ -1,5 +1,6 @@
 import ReactECharts from 'echarts-for-react'
 import type { ECharts } from 'echarts'
+import { formatDate } from '@/shared/utils/format'
 import type { StockTrendKlineItem } from '@/shared/types/common'
 
 interface RSIChartProps {
@@ -52,7 +53,7 @@ function calculateRSI(kline: StockTrendKlineItem[], periods: number[] = [6, 12, 
 
 function RSIChart({ kline, onChartReady }: RSIChartProps) {
   const rsiData = calculateRSI(kline)
-  const dates = kline.map((item) => item.trade_date || '')
+  const dates = kline.map((item) => formatDate(item.trade_date) || '')
 
   const option = {
     animation: false,

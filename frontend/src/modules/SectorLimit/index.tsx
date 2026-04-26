@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Input, Button, Table, Space, Card } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { sectorApi } from '@/shared/api/sector'
+import { formatDate } from '@/shared/utils/format'
 import type { DailySectorLimitData } from '@/shared/types/common'
 
 function SectorLimit() {
@@ -19,7 +20,7 @@ function SectorLimit() {
   })
 
   const columns: ColumnsType<DailySectorLimitData> = [
-    { title: '交易日期', dataIndex: 'trade_date', key: 'trade_date', width: 120 },
+    { title: '交易日期', dataIndex: 'trade_date', key: 'trade_date', width: 120, render: formatDate },
     { title: '板块代码', dataIndex: 'sector_code', key: 'sector_code', width: 120 },
     { title: '板块名称', dataIndex: 'sector_name', key: 'sector_name', width: 150 },
     { title: '板块类型', dataIndex: 'sector_type', key: 'sector_type', width: 100 },

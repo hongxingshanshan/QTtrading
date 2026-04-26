@@ -1,5 +1,6 @@
 import ReactECharts from 'echarts-for-react'
 import type { ECharts } from 'echarts'
+import { formatDate } from '@/shared/utils/format'
 import type { StockTrendKlineItem } from '@/shared/types/common'
 
 interface KDJChartProps {
@@ -50,7 +51,7 @@ function calculateKDJ(kline: StockTrendKlineItem[], n: number = 9) {
 
 function KDJChart({ kline, onChartReady }: KDJChartProps) {
   const { k, d, j } = calculateKDJ(kline)
-  const dates = kline.map((item) => item.trade_date || '')
+  const dates = kline.map((item) => formatDate(item.trade_date) || '')
 
   const option = {
     animation: false,

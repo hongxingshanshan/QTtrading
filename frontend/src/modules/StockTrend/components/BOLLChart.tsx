@@ -1,5 +1,6 @@
 import ReactECharts from 'echarts-for-react'
 import type { ECharts } from 'echarts'
+import { formatDate } from '@/shared/utils/format'
 import type { StockTrendKlineItem } from '@/shared/types/common'
 
 interface BOLLChartProps {
@@ -39,7 +40,7 @@ function calculateBOLL(kline: StockTrendKlineItem[], n: number = 20, k: number =
 
 function BOLLChart({ kline, onChartReady }: BOLLChartProps) {
   const { mid, upper, lower } = calculateBOLL(kline)
-  const dates = kline.map((item) => item.trade_date || '')
+  const dates = kline.map((item) => formatDate(item.trade_date) || '')
   const closes = kline.map((item) => item.close)
 
   const option = {

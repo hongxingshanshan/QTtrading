@@ -1,6 +1,7 @@
 import ReactECharts from 'echarts-for-react'
 import type { ECharts } from 'echarts'
 import type { EChartsOption } from 'echarts'
+import { formatDate } from '@/shared/utils/format'
 import type { StockTrendResponse } from '@/shared/types/common'
 
 interface TrendChartProps {
@@ -15,7 +16,8 @@ function TrendChart({ data, visibleMas = ['ma5', 'ma10', 'ma20', 'ma30', 'ma60',
   }
 
   const { kline, ma, latest } = data
-  const dates = kline.map((item) => item.trade_date || '')
+  // 将 YYYYMMDD 格式转换为 YYYY-MM-DD 用于图表显示
+  const dates = kline.map((item) => formatDate(item.trade_date) || '')
 
   // K线数据 [open, close, low, high]
   const klineData = kline.map((item) => [
@@ -97,7 +99,7 @@ function TrendChart({ data, visibleMas = ['ma5', 'ma10', 'ma20', 'ma30', 'ma60',
 
         return `
           <div style="padding: 8px;">
-            <div style="font-weight: bold; margin-bottom: 8px;">${item.trade_date}</div>
+            <div style="font-weight: bold; margin-bottom: 8px;">${formatDate(item.trade_date)}</div>
             <div>开盘: ${item.open?.toFixed(2)}</div>
             <div>收盘: <span style="color: ${pctChgColor}">${item.close?.toFixed(2)}</span></div>
             <div>最高: ${item.high?.toFixed(2)}</div>
@@ -106,7 +108,7 @@ function TrendChart({ data, visibleMas = ['ma5', 'ma10', 'ma20', 'ma30', 'ma60',
             <div>成交量: ${item.vol ? (item.vol / 10000).toFixed(2) + '万手' : '-'}</div>
             <div style="margin-top: 8px; border-top: 1px solid #eee; padding-top: 8px;">
               <div style="font-weight: bold;">
-                ${item.trade_date} 至今涨幅 <span style="color: ${toNowColor}">${toNowPctChg >= 0 ? '+' : ''}${toNowPctChg.toFixed(2)}%</span>
+                ${formatDate(item.trade_date)} 至今涨幅 <span style="color: ${toNowColor}">${toNowPctChg >= 0 ? '+' : ''}${toNowPctChg.toFixed(2)}%</span>
               </div>
             </div>
             ${maValues.length > 0 ? `
