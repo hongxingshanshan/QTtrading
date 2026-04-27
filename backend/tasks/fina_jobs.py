@@ -78,15 +78,15 @@ def get_recent_periods(count: int = 8) -> list:
     return periods[:count]
 
 
-def import_fina_indicator(periods: list = None, ts_code: str = None):
+def import_fina_indicator(periods: list = None, ts_codes: list = None):
     """
     导入财务指标数据
 
     Args:
         periods: 报告期列表，如 ['20231231', '20230930']
-        ts_code: 股票代码，为None时导入全部股票
+        ts_codes: 股票代码列表，为None时导入全部股票
     """
-    logger.info(f"开始导入财务指标数据: periods={periods}, ts_code={ts_code}")
+    logger.info(f"开始导入财务指标数据: periods={periods}")
 
     try:
         pro = get_pro_api()
@@ -100,50 +100,60 @@ def import_fina_indicator(periods: list = None, ts_code: str = None):
                 # 获取最近8个报告期
                 periods = get_recent_periods(8)
 
+            # 如果没有指定股票列表，获取全部上市股票
+            if ts_codes is None:
+                logger.info("获取全部上市股票列表...")
+                stock_basic = pro.stock_basic(exchange='', list_status='L', fields='ts_code')
+                ts_codes = stock_basic['ts_code'].tolist()
+                logger.info(f"共 {len(ts_codes)} 只股票")
+
             for period in periods:
-                logger.info(f"正在处理报告期: {period}")
+                logger.info(f"正在处理报告期: {period}, 剩余股票: {len(ts_codes)}")
 
-                try:
-                    # 调用 Tushare fina_indicator 接口
-                    if ts_code:
-                        df = pro.fina_indicator(ts_code=ts_code, period=period)
-                    else:
-                        df = pro.fina_indicator(period=period)
+                # 按批次处理，每批100只股票
+                batch_size = 100
+                for i in range(0, len(ts_codes), batch_size):
+                    batch_codes = ts_codes[i:i+batch_size]
 
-                    if df.empty:
-                        logger.debug(f"报告期 {period} 无数据")
-                        continue
+                    try:
+                        # 批量获取财务指标
+                        df = pro.fina_indicator(ts_code=','.join(batch_codes), period=period)
 
-                    # 只保留需要的字段
-                    available_fields = [f for f in FINA_FIELDS if f in df.columns]
-                    df = df[available_fields]
+                        if df.empty:
+                            continue
 
-                    # 处理 NaN 值
-                    df = df.where(pd.notna(df), None)
-                    data = df.to_dict(orient='records')
+                        # 只保留需要的字段
+                        available_fields = [f for f in FINA_FIELDS if f in df.columns]
+                        df = df[available_fields]
 
-                    # 批量插入
-                    for record in data:
-                        # 构建 SQL
-                        columns = list(record.keys())
-                        placeholders = [f':{col}' for col in columns]
-                        update_cols = [col for col in columns if col not in ['ts_code', 'end_date']]
-                        update_set = ', '.join([f'{col}=VALUES({col})' for col in update_cols])
+                        # 处理 NaN 值
+                        import numpy as np
+                        df = df.replace({np.nan: None})
+                        data = df.to_dict(orient='records')
 
-                        sql = f"""
-                            INSERT INTO fina_indicator ({', '.join(columns)})
-                            VALUES ({', '.join(placeholders)})
-                            ON DUPLICATE KEY UPDATE {update_set}
-                        """
-                        db.execute(text(sql), record)
+                        # 批量插入
+                        for record in data:
+                            # 构建 SQL
+                            columns = list(record.keys())
+                            placeholders = [f':{col}' for col in columns]
+                            update_cols = [col for col in columns if col not in ['ts_code', 'end_date']]
+                            update_set = ', '.join([f'{col}=VALUES({col})' for col in update_cols])
 
-                    db.commit()
-                    imported_count += len(data)
-                    logger.info(f"报告期 {period} 导入完成: {len(data)} 条")
+                            sql = f"""
+                                INSERT INTO fina_indicator ({', '.join(columns)})
+                                VALUES ({', '.join(placeholders)})
+                                ON DUPLICATE KEY UPDATE {update_set}
+                            """
+                            db.execute(text(sql), record)
 
-                except Exception as e:
-                    error_count += 1
-                    logger.warning(f"导入报告期 {period} 失败: {e}")
+                        db.commit()
+                        imported_count += len(data)
+
+                    except Exception as e:
+                        error_count += 1
+                        logger.warning(f"导入报告期 {period} 批次 {i//batch_size} 失败: {e}")
+
+                logger.info(f"报告期 {period} 导入完成")
 
             logger.info(f"财务指标数据导入完成: 成功={imported_count}, 失败={error_count}")
 

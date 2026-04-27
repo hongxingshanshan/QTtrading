@@ -53,8 +53,9 @@ def import_daily_basic(start_date: str, end_date: str):
                         current_date += timedelta(days=1)
                         continue
 
-                    # 处理 NaN 值
-                    df = df.where(pd.notna(df), None)
+                    # 处理 NaN 值 - 使用 numpy 的 nan
+                    import numpy as np
+                    df = df.replace({np.nan: None})
                     data = df.to_dict(orient='records')
 
                     # 批量插入

@@ -141,39 +141,48 @@ function ConditionBuilder({ conditions, onChange }: ConditionBuilderProps) {
             <Radio value="up">连续上涨</Radio>
             <Radio value="down">连续下跌</Radio>
           </Radio.Group>
-          <InputNumber
-            min={1}
-            max={20}
-            value={condition.days || 3}
-            onChange={(v) => updateCondition(index, { days: v || 3 })}
-            addonBefore="天数"
-          />
+          <Space.Compact>
+            <span style={{ padding: '0 11px', lineHeight: '32px', background: '#fafafa', border: '1px solid #d9d9d9', borderRadius: '6px 0 0 6px' }}>天数</span>
+            <InputNumber
+              min={1}
+              max={20}
+              value={condition.days || 3}
+              onChange={(v) => updateCondition(index, { days: v || 3 })}
+              style={{ borderRadius: '0 6px 6px 0' }}
+            />
+          </Space.Compact>
         </Space>
       )
     }
 
     if (condition.type === 'limit_up') {
       return (
-        <InputNumber
-          min={1}
-          max={10}
-          value={condition.days || 1}
-          onChange={(v) => updateCondition(index, { days: v || 1 })}
-          addonBefore="连板数"
-        />
+        <Space.Compact>
+          <span style={{ padding: '0 11px', lineHeight: '32px', background: '#fafafa', border: '1px solid #d9d9d9', borderRadius: '6px 0 0 6px' }}>连板数</span>
+          <InputNumber
+            min={1}
+            max={10}
+            value={condition.days || 1}
+            onChange={(v) => updateCondition(index, { days: v || 1 })}
+            style={{ borderRadius: '0 6px 6px 0' }}
+          />
+        </Space.Compact>
       )
     }
 
     if (condition.type === 'boll_position') {
       return (
-        <InputNumber
-          min={0}
-          max={1}
-          step={0.1}
-          value={(condition.value as number) || 0.2}
-          onChange={(v) => updateCondition(index, { value: v })}
-          addonBefore="位置阈值"
-        />
+        <Space.Compact>
+          <span style={{ padding: '0 11px', lineHeight: '32px', background: '#fafafa', border: '1px solid #d9d9d9', borderRadius: '6px 0 0 6px' }}>位置阈值</span>
+          <InputNumber
+            min={0}
+            max={1}
+            step={0.1}
+            value={(condition.value as number) || 0.2}
+            onChange={(v) => updateCondition(index, { value: v })}
+            style={{ borderRadius: '0 6px 6px 0' }}
+          />
+        </Space.Compact>
       )
     }
 
