@@ -23,6 +23,7 @@ class ConditionModel(BaseModel):
     )
     field: Optional[str] = Field(None, description="字段名")
     operator: Optional[str] = Field(None, description="操作符: >/>=/</<=/==/!=/in/not_in/between")
+    op: Optional[str] = Field(None, description="操作符(简写): >/>=/</<=/==/!=/in/not_in/between")
     value: Optional[float | List[float] | List[str]] = Field(None, description="比较值")
     # 特殊条件参数
     cross_type: Optional[str] = Field(None, description="金叉死叉类型: golden/death")
@@ -30,6 +31,16 @@ class ConditionModel(BaseModel):
     direction: Optional[str] = Field(None, description="方向: up/down")
     days: Optional[int] = Field(None, description="天数")
     status: Optional[str] = Field(None, description="涨跌停状态: up/down/none")
+
+    def model_dump(self, *args, **kwargs):
+        """重写 model_dump，合并 op 和 operator 字段"""
+        data = super().model_dump(*args, **kwargs)
+        # 如果 op 字段有值但 operator 没有，则使用 op 的值
+        if data.get('op') and not data.get('operator'):
+            data['operator'] = data['op']
+        # 删除 op 字段，避免混淆
+        data.pop('op', None)
+        return data
 
 
 class ScreenRequest(BaseModel):

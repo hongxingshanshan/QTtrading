@@ -202,10 +202,18 @@ class StockScreener:
             }
         """
         try:
-            # 检测需要关联哪些表
+            # 检测需要关联哪些表（考虑自动检测字段类型）
             need_limit = any(c.get('type') in ['limit', 'limit_status'] for c in conditions)
-            need_basic = any(c.get('type') == 'basic' for c in conditions)
-            need_fina = any(c.get('type') == 'fina' for c in conditions)
+            need_basic = any(
+                c.get('type') == 'basic' or
+                (c.get('type', 'indicator') == 'indicator' and c.get('field') in self.BASIC_FIELDS)
+                for c in conditions
+            )
+            need_fina = any(
+                c.get('type') == 'fina' or
+                (c.get('type', 'indicator') == 'indicator' and c.get('field') in self.FINA_FIELDS)
+                for c in conditions
+            )
 
             # 构建基础查询
             query = self._build_base_query(trade_date, need_limit, need_basic, need_fina)
@@ -315,23 +323,31 @@ class StockScreener:
         return query
 
     def _get_recent_period(self, trade_date: str) -> str:
-        """根据交易日期获取最近的财报期"""
+        """
+        根据交易日期获取最近的已发布财报期
+
+        财报发布时间：
+        - 一季报：4月30日前发布
+        - 半年报：8月31日前发布
+        - 三季报：10月31日前发布
+        - 年报：4月30日前发布
+        """
         year = int(trade_date[:4])
         month = int(trade_date[4:6])
 
-        # 确定最近财报期
-        if month <= 3:
-            # 1-3月，看去年三季报
+        # 确定最近已发布的财报期
+        if month <= 4:
+            # 1-4月，去年三季报已发布（10月底），去年年报和今年一季报还未截止
             return f"{year-1}0930"
-        elif month <= 6:
-            # 4-6月，看去年年报
-            return f"{year-1}1231"
-        elif month <= 9:
-            # 7-9月，看今年一季报
+        elif month <= 8:
+            # 5-8月，今年一季报已发布（4月底），去年年报也已发布
             return f"{year}0331"
-        else:
-            # 10-12月，看今年中报
+        elif month <= 10:
+            # 9-10月，今年中报已发布（8月底）
             return f"{year}0630"
+        else:
+            # 11-12月，今年三季报已发布（10月底）
+            return f"{year}0930"
 
     def _evaluate_condition(self, condition: Dict[str, Any], trade_date: str):
         """
@@ -350,6 +366,17 @@ class StockScreener:
         field = condition.get('field')
         operator = condition.get('operator')
         value = condition.get('value')
+
+        # 自动检测字段类型（当 type 为默认值 indicator 时）
+        if cond_type == 'indicator' and field:
+            if field in self.BASIC_FIELDS:
+                cond_type = 'basic'
+            elif field in self.FINA_FIELDS:
+                cond_type = 'fina'
+            elif field in self.STOCK_FIELDS:
+                cond_type = 'industry'
+            elif field in self.LIMIT_FIELDS:
+                cond_type = 'limit'
 
         # 技术指标条件
         if cond_type == 'indicator':
@@ -449,16 +476,22 @@ class StockScreener:
         """
         构建涨跌停状态条件
         status: 'up'=涨停, 'down'=跌停, 'none'=非涨跌停
+
+        当涨跌停表无数据时，使用日线数据的涨跌幅判断：
+        - 涨停: pct_chg >= 9.8% (考虑科创板/创业板20%涨停)
+        - 跌停: pct_chg <= -9.8%
         """
         if status == 'up':
-            return DailyLimitData.limit_status == 'U'
+            # 涨停：使用日线涨跌幅判断（涨跌停表可能无数据）
+            return DailyData.pct_chg >= 9.8
         elif status == 'down':
-            return DailyLimitData.limit_status == 'D'
+            # 跌停
+            return DailyData.pct_chg <= -9.8
         else:
             # 非涨跌停
-            return or_(
-                DailyLimitData.limit_status == None,
-                DailyLimitData.limit_status == ''
+            return and_(
+                DailyData.pct_chg < 9.8,
+                DailyData.pct_chg > -9.8
             )
 
     def _build_limit_up_condition(self, days: int):

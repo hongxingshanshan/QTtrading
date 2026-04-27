@@ -11,6 +11,7 @@ class DailyBasic(Base):
     __tablename__ = "daily_basic"
     __table_args__ = (
         PrimaryKeyConstraint('ts_code', 'trade_date'),
+        {'mysql_charset': 'utf8mb4', 'mysql_collate': 'utf8mb4_0900_ai_ci'},
     )
 
     # 基础信息
