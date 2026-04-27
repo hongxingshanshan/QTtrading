@@ -115,6 +115,12 @@ function StockScreen() {
       width: 80
     },
     {
+      title: '地域',
+      dataIndex: 'area',
+      key: 'area',
+      width: 70
+    },
+    {
       title: '收盘价',
       dataIndex: 'close',
       key: 'close',
@@ -265,7 +271,7 @@ function StockScreen() {
             showQuickJumper: true,
             showTotal: (total) => `共 ${total} 条`
           }}
-          scroll={{ x: 900 }}
+          scroll={{ x: 970 }}
         />
       </Card>
     </div>
