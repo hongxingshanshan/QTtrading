@@ -304,3 +304,41 @@ async def get_available_fields():
             ]
         }
     }
+
+
+@router.get("/industries", summary="获取行业列表")
+async def get_industries(db: Session = Depends(get_db)):
+    """获取所有行业列表"""
+    try:
+        from sqlalchemy import text
+        result = db.execute(text("""
+            SELECT DISTINCT industry FROM stock_basic_info
+            WHERE industry IS NOT NULL AND industry != ''
+            ORDER BY industry
+        """))
+        industries = [row[0] for row in result.fetchall()]
+        return {
+            "success": True,
+            "data": industries
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"查询失败: {str(e)}")
+
+
+@router.get("/areas", summary="获取地域列表")
+async def get_areas(db: Session = Depends(get_db)):
+    """获取所有地域列表"""
+    try:
+        from sqlalchemy import text
+        result = db.execute(text("""
+            SELECT DISTINCT area FROM stock_basic_info
+            WHERE area IS NOT NULL AND area != ''
+            ORDER BY area
+        """))
+        areas = [row[0] for row in result.fetchall()]
+        return {
+            "success": True,
+            "data": areas
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"查询失败: {str(e)}")

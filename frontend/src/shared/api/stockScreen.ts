@@ -29,4 +29,12 @@ export const stockScreenApi = {
   // 获取可用字段
   getAvailableFields: () =>
     client.get<any, { success: boolean; data: AvailableFields }>('/stock_screen/fields'),
+
+  // 获取行业列表
+  getIndustries: () =>
+    client.get<any, { success: boolean; data: string[] }>('/stock_screen/industries'),
+
+  // 获取地域列表
+  getAreas: () =>
+    client.get<any, { success: boolean; data: string[] }>('/stock_screen/areas'),
 }

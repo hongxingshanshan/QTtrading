@@ -26,9 +26,12 @@ const CONDITION_TYPE_OPTIONS: { value: ConditionType; label: string }[] = [
 
 function ConditionBuilder({ conditions, onChange }: ConditionBuilderProps) {
   const [fields, setFields] = useState<AvailableFields | null>(null)
+  const [industries, setIndustries] = useState<string[]>([])
+  const [areas, setAreas] = useState<string[]>([])
 
   useEffect(() => {
     loadFields()
+    loadIndustriesAndAreas()
   }, [])
 
   const loadFields = async () => {
@@ -39,6 +42,19 @@ function ConditionBuilder({ conditions, onChange }: ConditionBuilderProps) {
       }
     } catch (error) {
       console.error('加载字段失败:', error)
+    }
+  }
+
+  const loadIndustriesAndAreas = async () => {
+    try {
+      const [indRes, areaRes] = await Promise.all([
+        stockScreenApi.getIndustries(),
+        stockScreenApi.getAreas(),
+      ])
+      if (indRes.success) setIndustries(indRes.data)
+      if (areaRes.success) setAreas(areaRes.data)
+    } catch (error) {
+      console.error('加载行业/地域失败:', error)
     }
   }
 
@@ -186,8 +202,48 @@ function ConditionBuilder({ conditions, onChange }: ConditionBuilderProps) {
       )
     }
 
+    // 行业/地域条件
+    if (condition.type === 'industry') {
+      const isIndustry = condition.field === 'industry'
+      const options = isIndustry ? industries : areas
+      return (
+        <Space>
+          <Select
+            style={{ width: 100 }}
+            value={condition.field || 'industry'}
+            onChange={(v) => updateCondition(index, { field: v, value: [] })}
+            options={[
+              { value: 'industry', label: '行业' },
+              { value: 'area', label: '地域' },
+            ]}
+          />
+          <Select
+            style={{ width: 100 }}
+            value={condition.operator || 'in'}
+            onChange={(v) => updateCondition(index, { operator: v })}
+            options={[
+              { value: 'in', label: '包含' },
+              { value: 'not_in', label: '不包含' },
+            ]}
+          />
+          <Select
+            mode="multiple"
+            style={{ width: 300 }}
+            value={(condition.value as string[]) || []}
+            onChange={(v) => updateCondition(index, { value: v })}
+            options={options.map(o => ({ value: o, label: o }))}
+            placeholder={`选择${isIndustry ? '行业' : '地域'}`}
+            showSearch
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+          />
+        </Space>
+      )
+    }
+
     // 标准条件渲染（字段+操作符+值）
-    const needsField = ['indicator', 'basic', 'fina', 'limit', 'industry'].includes(condition.type)
+    const needsField = ['indicator', 'basic', 'fina', 'limit'].includes(condition.type)
     const needsOperator = ['indicator', 'basic', 'fina', 'limit'].includes(condition.type)
     const needsValue = ['indicator', 'basic', 'fina', 'limit'].includes(condition.type)
 
