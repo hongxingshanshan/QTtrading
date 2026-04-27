@@ -268,7 +268,28 @@ function ConditionBuilder({ conditions, onChange }: ConditionBuilderProps) {
         <Space direction="vertical" className="w-full">
           {conditions.map((condition, index) => (
             <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-              <Tag color="blue">{CONDITION_TYPE_OPTIONS.find(o => o.value === condition.type)?.label}</Tag>
+              <Select
+                style={{ width: 150 }}
+                value={condition.type}
+                onChange={(v) => {
+                  // 切换类型时重置字段为该类型的默认值
+                  const defaults: Record<ConditionType, Partial<ScreenCondition>> = {
+                    indicator: { field: 'rsi6', operator: '<', value: 20 },
+                    basic: { field: 'pe_ttm', operator: '<', value: 20 },
+                    fina: { field: 'roe', operator: '>', value: 0.1 },
+                    industry: { field: 'industry', operator: 'in', value: [] },
+                    limit: { field: 'limit_times', operator: '>', value: 1 },
+                    limit_status: { status: 'up' },
+                    macd_cross: { cross_type: 'golden' },
+                    ma_alignment: { alignment: 'bullish' },
+                    boll_position: { value: 0.2 },
+                    consecutive: { direction: 'down', days: 3 },
+                    limit_up: { days: 1 },
+                  }
+                  updateCondition(index, { type: v, ...defaults[v] })
+                }}
+                options={CONDITION_TYPE_OPTIONS}
+              />
               {renderConditionEditor(condition, index)}
               <Button
                 type="text"
