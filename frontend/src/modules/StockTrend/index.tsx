@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Spin, Button } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as echarts from 'echarts'
 import { stockApi } from '@/shared/api/stock'
+import { usePersistedState } from '@/shared/hooks/usePersistedState'
 import TrendChart from './components/TrendChart'
 import MACDChart from './components/MACDChart'
 import KDJChart from './components/KDJChart'
@@ -20,10 +21,12 @@ function StockTrend() {
   const chartInstancesRef = useRef<echarts.ECharts[]>([])
   const connectedRef = useRef(false)
 
-  const [period, setPeriod] = useState<'daily' | 'weekly' | 'monthly'>('daily')
-  const [adjType, setAdjType] = useState<'qfq' | 'hfq' | 'none'>('qfq')
-  const [indicators, setIndicators] = useState<string[]>(['macd', 'kdj', 'rsi', 'boll'])
-  const [visibleMas, setVisibleMas] = useState<string[]>(['ma5', 'ma10', 'ma20', 'ma30', 'ma60', 'ma90', 'ma125', 'ma250'])
+  // 趋势图设置按股票代码存储，使用动态 key
+  const storageKeyPrefix = `stocktrend-${code || 'default'}`
+  const [period, setPeriod] = usePersistedState<'daily' | 'weekly' | 'monthly'>(`${storageKeyPrefix}-period`, 'daily')
+  const [adjType, setAdjType] = usePersistedState<'qfq' | 'hfq' | 'none'>(`${storageKeyPrefix}-adjType`, 'qfq')
+  const [indicators, setIndicators] = usePersistedState<string[]>(`${storageKeyPrefix}-indicators`, ['macd', 'kdj', 'rsi', 'boll'])
+  const [visibleMas, setVisibleMas] = usePersistedState<string[]>(`${storageKeyPrefix}-visibleMas`, ['ma5', 'ma10', 'ma20', 'ma30', 'ma60', 'ma90', 'ma125', 'ma250'])
 
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: ['stock-trend', code, period, adjType],

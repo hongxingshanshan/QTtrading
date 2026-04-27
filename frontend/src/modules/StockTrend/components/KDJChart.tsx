@@ -75,15 +75,15 @@ function KDJChart({ kline, onChartReady }: KDJChartProps) {
       {
         type: 'inside',
         xAxisIndex: 0,
-        start: 70,
-        end: 100,
+        startValue: dates.length > 130 ? dates.length - 130 : 0,
+        endValue: dates.length - 1,
       },
       {
         type: 'slider',
         show: false,
         xAxisIndex: 0,
-        start: 70,
-        end: 100,
+        startValue: dates.length > 130 ? dates.length - 130 : 0,
+        endValue: dates.length - 1,
       },
     ],
     xAxis: {

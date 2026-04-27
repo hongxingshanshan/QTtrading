@@ -32,6 +32,12 @@ export const formatDate = (date: unknown, formatStr = 'YYYY-MM-DD') => {
   return '-'
 }
 
+/**
+ * 专门用于 Ant Design Table render 的日期格式化函数
+ * 用法: { title: '日期', dataIndex: 'trade_date', render: renderDate }
+ */
+export const renderDate = (date: unknown) => formatDate(date)
+
 export const formatNumber = (num: number | undefined | null) => {
   if (num === undefined || num === null) return '-'
   return num.toLocaleString()

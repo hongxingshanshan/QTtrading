@@ -1,11 +1,12 @@
 import client from './client'
+import type { PagedResponse, HotMoneyInfo, DailyHotMoneyTrade } from '@/shared/types/common'
 
 export const hotmoneyApi = {
   getHotMoneyList: (params: {
     name?: string
     page?: number
     pageSize?: number
-  }) => client.get('/get_hotmoney_data', { params }),
+  }) => client.get<any, PagedResponse<HotMoneyInfo>>('/get_hotmoney_data', { params }),
 
   getDailyHotMoneyTrade: (params: {
     hmName?: string
@@ -14,5 +15,5 @@ export const hotmoneyApi = {
     tsCode?: string
     page?: number
     pageSize?: number
-  }) => client.get('/get_daily_hotmoney_trade_data', { params }),
+  }) => client.get<any, PagedResponse<DailyHotMoneyTrade>>('/get_daily_hotmoney_trade_data', { params }),
 }

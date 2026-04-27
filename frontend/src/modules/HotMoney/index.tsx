@@ -1,15 +1,13 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Input, Button, Table, Space, DatePicker } from 'antd'
+import { Input, Button, Space } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { hotmoneyApi } from '@/shared/api/hotmoney'
 import { usePagination } from '@/shared/hooks/usePagination'
-import { formatAmount, formatDate } from '@/shared/utils/format'
+import { formatAmount, renderDate } from '@/shared/utils/format'
 import PaginationTable from '@/shared/components/PaginationTable'
 import StockLink from '@/shared/components/StockLink'
 import type { DailyHotMoneyTradeItem } from './types'
-
-const { RangePicker } = DatePicker
 
 function HotMoney() {
   const [hmName, setHmName] = useState('')
@@ -32,7 +30,7 @@ function HotMoney() {
   })
 
   const columns: ColumnsType<DailyHotMoneyTradeItem> = [
-    { title: '交易日期', dataIndex: 'trade_date', key: 'trade_date', width: 120, render: formatDate },
+    { title: '交易日期', dataIndex: 'trade_date', key: 'trade_date', width: 120, render: renderDate },
     {
       title: '股票代码',
       dataIndex: 'ts_code',

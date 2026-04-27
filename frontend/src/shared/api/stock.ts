@@ -1,4 +1,5 @@
 import client from './client'
+import type { PagedResponse, StockBasicInfo, DailyData, StockTrendResponse } from '@/shared/types/common'
 
 export const stockApi = {
   getStockList: (params: {
@@ -9,10 +10,10 @@ export const stockApi = {
     endDate?: string
     page?: number
     pageSize?: number
-  }) => client.get('/get_stock_basic_info', { params }),
+  }) => client.get<any, PagedResponse<StockBasicInfo>>('/get_stock_basic_info', { params }),
 
   getDailyData: (params: { ts_code: string }) =>
-    client.get('/get_daily_data', { params }),
+    client.get<any, { data: DailyData[] }>('/get_daily_data', { params }),
 
   getTrendData: (
     ts_code: string,
@@ -22,5 +23,5 @@ export const stockApi = {
       period?: 'daily' | 'weekly' | 'monthly'
       adj_type?: 'qfq' | 'hfq' | 'none'
     }
-  ) => client.get(`/trend/${ts_code}`, { params }),
+  ) => client.get<any, StockTrendResponse>(`/trend/${ts_code}`, { params }),
 }

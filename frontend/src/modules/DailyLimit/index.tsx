@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Table, Card } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { limitApi } from '@/shared/api/limit'
-import { formatDate } from '@/shared/utils/format'
+import { renderDate } from '@/shared/utils/format'
 import StockLink from '@/shared/components/StockLink'
 import type { DailyLimitData } from '@/shared/types/common'
 
@@ -13,7 +13,7 @@ function DailyLimit() {
   })
 
   const columns: ColumnsType<DailyLimitData> = [
-    { title: '交易日期', dataIndex: 'trade_date', key: 'trade_date', width: 120, render: formatDate },
+    { title: '交易日期', dataIndex: 'trade_date', key: 'trade_date', width: 120, render: renderDate },
     {
       title: '股票代码',
       dataIndex: 'ts_code',

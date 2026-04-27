@@ -17,14 +17,15 @@ import { SearchOutlined, ReloadOutlined } from '@ant-design/icons'
 import ConditionBuilder from './components/ConditionBuilder'
 import TemplateSelector from './components/TemplateSelector'
 import { stockScreenApi } from '@/shared/api/stockScreen'
+import { usePersistedState } from '@/shared/hooks/usePersistedState'
 import type { ScreenCondition, ScreenStock } from './types'
 import StockLink from '@/shared/components/StockLink'
 
 function StockScreen() {
-  const [tradeDate, setTradeDate] = useState<string>('')
-  const [conditions, setConditions] = useState<ScreenCondition[]>([])
-  const [logic, setLogic] = useState<'AND' | 'OR'>('AND')
-  const [limit, setLimit] = useState(100)
+  const [tradeDate, setTradeDate] = usePersistedState<string>('stockscreen-tradeDate', '')
+  const [conditions, setConditions] = usePersistedState<ScreenCondition[]>('stockscreen-conditions', [])
+  const [logic, setLogic] = usePersistedState<'AND' | 'OR'>('stockscreen-logic', 'AND')
+  const [limit, setLimit] = usePersistedState('stockscreen-limit', 100)
   const [availableDates, setAvailableDates] = useState<string[]>([])
 
   // 加载可用日期
