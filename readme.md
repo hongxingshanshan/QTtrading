@@ -147,7 +147,7 @@ QTtrading/
 ```bash
 # 后端
 cd backend
-python -m uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --reload --port 8001
 
 # 前端
 cd frontend
@@ -155,9 +155,9 @@ npm run dev
 ```
 
 ### 访问地址
-- 前端: http://localhost:3000
-- 后端 API: http://localhost:8000
-- API 文档: http://localhost:8000/docs
+- 前端: http://localhost:3001
+- 后端 API: http://localhost:8001
+- API 文档: http://localhost:8001/docs
 
 ## API 接口
 

@@ -63,7 +63,7 @@ npm run build      # 生产构建
 ### 后端
 ```bash
 pip install -r requirements.txt   # 安装 Python 依赖
-python backend/app.py              # 启动 Flask 服务 (localhost:5000)
+python backend/app.py              # 启动 Flask 服务 (localhost:8001)
 ```
 
 ## 开发注意事项

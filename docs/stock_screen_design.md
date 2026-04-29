@@ -262,7 +262,7 @@ GET /api/stock_screen/templates
 ### 1. 技术指标选股
 
 ```bash
-curl -X POST "http://localhost:8000/api/stock_screen" \
+curl -X POST "http://localhost:8001/api/stock_screen" \
   -H "Content-Type: application/json" \
   -d '{
     "trade_date": "20260424",
@@ -278,7 +278,7 @@ curl -X POST "http://localhost:8000/api/stock_screen" \
 ### 2. 低估值选股
 
 ```bash
-curl -X POST "http://localhost:8000/api/stock_screen" \
+curl -X POST "http://localhost:8001/api/stock_screen" \
   -H "Content-Type: application/json" \
   -d '{
     "trade_date": "20260424",
@@ -294,7 +294,7 @@ curl -X POST "http://localhost:8000/api/stock_screen" \
 ### 3. 涨停板选股
 
 ```bash
-curl -X POST "http://localhost:8000/api/stock_screen" \
+curl -X POST "http://localhost:8001/api/stock_screen" \
   -H "Content-Type: application/json" \
   -d '{
     "trade_date": "20260424",
@@ -309,7 +309,7 @@ curl -X POST "http://localhost:8000/api/stock_screen" \
 ### 4. 使用模板选股
 
 ```bash
-curl -X POST "http://localhost:8000/api/stock_screen/template/low_valuation?trade_date=20260424"
+curl -X POST "http://localhost:8001/api/stock_screen/template/low_valuation?trade_date=20260424"
 ```
 
 ---
