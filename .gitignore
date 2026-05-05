@@ -74,3 +74,5 @@ backend/strategy/data/
 
 # Claude Code
 .claude/scheduled_tasks.lock
+.playwright-mcp/
+.playwright-mcp/page-2026-05-05T11-18-10-841Z.yml
